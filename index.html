@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026 離家出走：心靈探索測驗</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #fdfaf5;
+            color: #4a4a4a;
+        }
+        .btn-option {
+            transition: all 0.3s ease;
+            border: 2px solid #e5e7eb;
+        }
+        .btn-option:hover {
+            border-color: #d97706;
+            background-color: #fffbeb;
+        }
+        .progress-bar {
+            transition: width 0.5s ease-in-out;
+        }
+        .fade-in {
+            animation: fadeIn 0.8s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .hongdao-orange { color: #d97706; }
+        .hongdao-bg-orange { background-color: #d97706; }
+        .hongdao-green { color: #166534; }
+        .hongdao-bg-green { background-color: #166534; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center p-4">
+
+    <!-- Start Screen -->
+    <div id="start-screen" class="max-w-2xl w-full bg-white rounded-3xl shadow-xl p-8 text-center fade-in">
+        <div class="mb-6">
+            <span class="inline-block px-4 py-1 bg-orange-100 text-orange-700 rounded-full text-sm font-bold mb-2">弘道基金會 2026 計畫</span>
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">離家出走：找尋你的第三人生韻律</h1>
+            <p class="text-lg text-gray-600 leading-relaxed mb-8">
+                人生下半場，是一場重新找回自己的練習。<br>
+                放下日常的瑣碎與牽掛，您準備好換一種呼吸方式了嗎？<br>
+                透過這五個生活抉擇，讓我們一起探索最適合您的出走路徑。
+            </p>
+        </div>
+        <button onclick="startQuiz()" class="w-full md:w-auto px-12 py-4 hongdao-bg-orange text-white text-xl font-bold rounded-full shadow-lg hover:bg-orange-700 transition duration-300">
+            開始探索
+        </button>
+    </div>
+
+    <!-- Quiz Screen -->
+    <div id="quiz-screen" class="max-w-2xl w-full bg-white rounded-3xl shadow-xl p-6 md:p-10 hidden fade-in">
+        <!-- Progress -->
+        <div class="mb-8">
+            <div class="flex justify-between text-sm text-gray-500 mb-2 font-medium">
+                <span id="question-number">問題 1 / 5</span>
+                <span id="progress-percent">20%</span>
+            </div>
+            <div class="w-full bg-gray-200 h-3 rounded-full overflow-hidden">
+                <div id="progress-bar" class="progress-bar hongdao-bg-orange h-full w-1/5"></div>
+            </div>
+        </div>
+
+        <!-- Question Content -->
+        <div id="question-container">
+            <h2 id="question-text" class="text-2xl font-bold text-gray-800 mb-8 leading-tight"></h2>
+            <div id="options-container" class="space-y-4">
+                <!-- Options will be injected here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Result Screen -->
+    <div id="result-screen" class="max-w-2xl w-full bg-white rounded-3xl shadow-xl p-8 hidden fade-in">
+        <div class="text-center mb-8">
+            <h3 class="text-xl text-orange-600 font-bold mb-2">探索結果</h3>
+            <h2 id="result-title" class="text-3xl font-bold text-gray-800 mb-4">您的出走風格</h2>
+            <div id="result-desc" class="text-lg text-gray-600 leading-relaxed mb-8 bg-orange-50 p-6 rounded-2xl text-left border-l-4 border-orange-500">
+            </div>
+        </div>
+
+        <div class="space-y-6">
+            <div class="bg-gray-50 p-6 rounded-2xl border border-gray-200">
+                <h4 class="font-bold text-gray-800 mb-2 flex items-center">
+                    <span class="w-8 h-8 rounded-full bg-green-100 text-green-700 flex items-center justify-center mr-2">📍</span>
+                    推薦您的出走路徑
+                </h4>
+                <p id="path-recommendation" class="text-lg text-green-800 font-medium"></p>
+            </div>
+
+            <div class="bg-gray-50 p-6 rounded-2xl border border-gray-200">
+                <h4 class="font-bold text-gray-800 mb-2 flex items-center">
+                    <span class="w-8 h-8 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center mr-2">🏠</span>
+                    推薦您的目的地 / 領路人
+                </h4>
+                <p id="dest-recommendation" class="text-lg text-blue-800 font-medium"></p>
+            </div>
+        </div>
+
+        <div class="mt-10 flex flex-col space-y-4 text-center">
+            <button onclick="location.reload()" class="w-full py-4 bg-gray-100 text-gray-600 text-lg font-bold rounded-full hover:bg-gray-200 transition">
+                重新測驗
+            </button>
+            <a href="https://www.hondao.org.tw/news/3/193" target="_blank" rel="noopener noreferrer" class="block w-full py-4 hongdao-bg-orange text-white text-xl font-bold rounded-full shadow-lg hover:bg-orange-700 transition">
+                了解 2026 計畫詳情
+            </a>
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                text: "關於啟程：在目前的生命階段，您最想「離開家」的理由是？",
+                options: [
+                    { text: "感覺生活到了瓶頸，想聽聽那些把第三人生過得精彩的人，是怎麼做到的。", score: { path: "practice" } },
+                    { text: "還有體力與熱忱，想把自己的能力投入到更有意義的地方，為土地做點事。", score: { path: "task" } },
+                    { text: "想要徹底斷開日常的瑣碎，到一個完全陌生的地方，重新練習一個人生活。", score: { path: "stay" } }
+                ]
+            },
+            {
+                text: "關於節奏：如果要把這趟旅程比喻成一種「步調」，您最嚮往哪一種？",
+                options: [
+                    { text: "像是一場慢步走，邊走邊看、邊採集，重新找回感官的靈敏度。", score: { style: "iris", dest: "changbin" } },
+                    { text: "像是一場說走就走的旅行，練習面對未知，證明自己一個人也能走得很好。", score: { style: "fun", path: "stay" } },
+                    { text: "像是跟著節奏勞動，流汗後與夥伴共食，感受生命扎實的重量。", score: { path: "task", dest: "fengbin" } }
+                ]
+            },
+            {
+                text: "關於場域：想像您站在一個開闊的空間，哪一種環境最能讓您感到平靜與力量？",
+                options: [
+                    { text: "充滿故事的小鎮街弄或步道，充滿了人的氣息與生活智慧。", score: { path: "practice", dest: "practice" } },
+                    { text: "廣闊無垠的大海或無人島，在那裡可以挑戰自我，看見世界的壯闊。", score: { dest: "baisha" } },
+                    { text: "深邃的森林與山脈，安靜到只能聽見呼吸，感受自然與自我的合一。", score: { dest: "changbin" } }
+                ]
+            },
+            {
+                text: "關於互動：您希望在這段時間裡，身邊的人扮演什麼樣的角色？",
+                options: [
+                    { text: "像是一位溫柔的領路人，帶著我觀察細節，分享生命經驗。", score: { path: "practice", style: "iris" } },
+                    { text: "像是一群並肩作戰的盟友，為了同一個目標共同努力。", score: { path: "task" } },
+                    { text: "像是點到為止的鄰居，彼此尊重空間，但在需要時能有深度交流。", score: { path: "stay" } }
+                ]
+            },
+            {
+                text: "關於自我：您期待在 2026 的這場出走後，遇見什麼樣的自己？",
+                options: [
+                    { text: "一個學會放慢配速、重新發現日常美感的自己。", score: { style: "iris" } },
+                    { text: "一個發現自己依然擁有勇氣、能完成冒險挑戰的自己。", score: { style: "fun", dest: "baisha" } },
+                    { text: "一個能與土地共生、在安靜中找到內在安定的自己。", score: { dest: "fengbin", path: "task" } }
+                ]
+            }
+        ];
+
+        let currentQuestion = 0;
+        let scores = {
+            path: { practice: 0, task: 0, stay: 0 },
+            style: { iris: 0, fun: 0 },
+            dest: { fengbin: 0, baisha: 0, changbin: 0 }
+        };
+
+        function startQuiz() {
+            document.getElementById('start-screen').classList.add('hidden');
+            document.getElementById('quiz-screen').classList.remove('hidden');
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const q = questions[currentQuestion];
+            document.getElementById('question-number').innerText = `問題 ${currentQuestion + 1} / ${questions.length}`;
+            document.getElementById('progress-percent').innerText = `${Math.round(((currentQuestion + 1) / questions.length) * 100)}%`;
+            document.getElementById('progress-bar').style.width = `${((currentQuestion + 1) / questions.length) * 100}%`;
+            document.getElementById('question-text').innerText = q.text;
+
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+
+            q.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = "btn-option w-full p-5 text-left text-lg md:text-xl rounded-2xl bg-white shadow-sm hover:shadow-md flex items-center";
+                btn.innerHTML = `
+                    <span class="w-10 h-10 rounded-full border-2 border-gray-200 flex items-center justify-center mr-4 text-gray-400 font-bold group-hover:border-orange-500">${String.fromCharCode(65 + idx)}</span>
+                    <span class="flex-1">${opt.text}</span>
+                `;
+                btn.onclick = () => selectOption(opt.score);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function selectOption(score) {
+            if (score.path) scores.path[score.path]++;
+            if (score.style) scores.style[score.style]++;
+            if (score.dest) scores.dest[score.dest]++;
+
+            if (currentQuestion < questions.length - 1) {
+                currentQuestion++;
+                showQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function showResult() {
+            document.getElementById('quiz-screen').classList.add('hidden');
+            document.getElementById('result-screen').classList.remove('hidden');
+
+            // Determine Path
+            const pathArr = Object.keys(scores.path);
+            const path = pathArr.reduce((a, b) => scores.path[a] >= scores.path[b] ? a : b);
+            
+            let resultTitle = "";
+            let resultDesc = "";
+            let pathName = "";
+            let destName = "";
+
+            if (path === "practice") {
+                pathName = "出走練習所 (3天 2026 系列課程)";
+                const style = scores.style.iris >= scores.style.fun ? "iris" : "fun";
+                if (style === "iris") {
+                    resultTitle = "細膩的風土觀察家";
+                    resultDesc = "您對於生活有著敏銳的觸覺，渴望在快節奏的世界中找到屬於自己的配速。您適合透過採集、慢行，重新建立與土地的連結。";
+                    destName = "🌿 非常台 Iris｜風土裡的慢練習 (花蓮、屏東場次)";
+                } else {
+                    resultTitle = "自由的生命實踐者";
+                    resultDesc = "您擁有一顆獨立且勇於探索的心。您渴望跨出舒適圈，練習一個人也能自在生活，並在行動中建立面對未來的信心。";
+                    destName = "☀️ 粉圓妹｜大人系的自由實踐課 (台中、花蓮場次)";
+                }
+            } else if (path === "task") {
+                pathName = "出走任務 (6天5夜 議題參與)";
+                const destArr = Object.keys(scores.dest);
+                const dest = destArr.reduce((a, b) => scores.dest[a] >= scores.dest[b] ? a : b);
+                resultTitle = "身體力行的行動派";
+                resultDesc = "您渴望透過實際的投入來感受生命的價值。不論是守護海洋、復育森林還是參與部落文化，您都能在「做中學」裡看見不同的自己。";
+                
+                if (dest === "fengbin") destName = "花蓮豐濱｜成為部落人 (部落文化與山林智慧)";
+                else if (dest === "baisha") destName = "澎湖白沙｜海漂實驗室 (海洋保護與挑戰之旅)";
+                else destName = "台東長濱｜與森林作朋友 (森林復育與自然生活)";
+            } else {
+                pathName = "地方交換宿 (2至4週 深度停留)";
+                resultTitle = "優雅的在地生活家";
+                resultDesc = "您已經準備好更獨立的探索。您渴望長時間停留在一個地方，運用您的專長回饋在地，並與土地建立更深層、如鄰里般的呼吸節奏。";
+                const destArr = Object.keys(scores.dest);
+                const dest = destArr.reduce((a, b) => scores.dest[a] >= scores.dest[b] ? a : b);
+                
+                if (dest === "fengbin") destName = "花蓮豐濱｜部落生活交換";
+                else if (dest === "baisha") destName = "澎湖白沙｜海島生活交換";
+                else destName = "台東長濱｜山海小鎮生活交換";
+            }
+
+            document.getElementById('result-title').innerText = resultTitle;
+            document.getElementById('result-desc').innerText = resultDesc;
+            document.getElementById('path-recommendation').innerText = pathName;
+            document.getElementById('dest-recommendation').innerText = destName;
+        }
+    </script>
+</body>
+</html>
