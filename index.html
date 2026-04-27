@@ -7,11 +7,52 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --color-beach: #f3e5ab; /* 沙灘黃 */
+            --color-ocean: #a5d8dd; /* 海洋藍 */
+            --color-forest: #b7c9a2; /* 森林綠 */
+            --color-grey: #d1d5db;  /* 現代灰 */
+            --hondao-orange: #d97706;
+        }
+
         body {
             font-family: 'Noto Sans TC', sans-serif;
-            background-color: #fdfaf5;
-            color: #4a4a4a;
+            background-color: #f8f9fa;
+            color: #444;
+            margin: 0;
+            overflow-x: hidden;
+            min-height: 100vh;
         }
+
+        /* 幾何背景容器 */
+        .geo-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+            background: linear-gradient(135deg, #fdfbf7 0%, #f3f4f6 100%);
+        }
+
+        /* 幾何三角形 - 參考圖片風格 */
+        .triangle {
+            position: absolute;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            opacity: 0.6;
+        }
+
+        /* 模擬圖片中的三角構圖與配色 */
+        .t1 { border-width: 0 150px 260px 150px; border-color: transparent transparent var(--color-beach) transparent; top: -50px; left: 10%; transform: rotate(10deg); }
+        .t2 { border-width: 0 120px 200px 120px; border-color: transparent transparent var(--color-ocean) transparent; top: 10%; left: 30%; transform: rotate(-5deg); opacity: 0.4; }
+        .t3 { border-width: 0 180px 300px 180px; border-color: transparent transparent var(--color-forest) transparent; top: -20px; right: 5%; transform: rotate(-15deg); }
+        .t4 { border-width: 0 100px 170px 100px; border-color: transparent transparent var(--color-grey) transparent; bottom: 10%; left: 5%; transform: rotate(20deg); }
+        .t5 { border-width: 0 140px 240px 140px; border-color: transparent transparent var(--color-ocean) transparent; bottom: -40px; right: 20%; transform: rotate(5deg); }
+        .t6 { border-width: 0 130px 220px 130px; border-color: transparent transparent var(--color-beach) transparent; top: 40%; right: -50px; transform: rotate(-25deg); opacity: 0.3; }
+
         .btn-option {
             transition: all 0.3s ease;
             border: 2px solid #e5e7eb;
@@ -19,6 +60,7 @@
         .btn-option:hover {
             border-color: #d97706;
             background-color: #fffbeb;
+            transform: translateY(-2px);
         }
         .progress-bar {
             transition: width 0.5s ease-in-out;
@@ -32,16 +74,32 @@
         }
         .hongdao-orange { color: #d97706; }
         .hongdao-bg-orange { background-color: #d97706; }
-        .hongdao-green { color: #166534; }
-        .hongdao-bg-green { background-color: #166534; }
+
+        /* 增加磨砂玻璃質感讓文字更清晰 */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col items-center justify-center p-4">
 
-    <div id="start-screen" class="max-w-2xl w-full bg-white rounded-3xl shadow-xl p-8 text-center fade-in">
+    <!-- 幾何背景層 -->
+    <div class="geo-background">
+        <div class="triangle t1"></div>
+        <div class="triangle t2"></div>
+        <div class="triangle t3"></div>
+        <div class="triangle t4"></div>
+        <div class="triangle t5"></div>
+        <div class="triangle t6"></div>
+    </div>
+
+    <!-- Start Screen -->
+    <div id="start-screen" class="max-w-2xl w-full glass-card rounded-3xl shadow-xl p-8 text-center fade-in">
         <div class="mb-6">
             <span class="inline-block px-4 py-1 bg-orange-100 text-orange-700 rounded-full text-sm font-bold mb-2">弘道基金會 2026 計畫</span>
-            <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">離家出走：為生活找一個暫停鍵</h1>
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">離家出走：為生活按下暫停鍵</h1>
             <p class="text-lg text-gray-600 leading-relaxed mb-8">
                 生活不該只是待辦清單的總和，而是一場找回好奇心的練習。<br>
                 放下日常的瑣碎與牽掛，您準備好換一種呼吸方式了嗎？<br>
@@ -53,7 +111,8 @@
         </button>
     </div>
 
-    <div id="quiz-screen" class="max-w-2xl w-full bg-white rounded-3xl shadow-xl p-6 md:p-10 hidden fade-in">
+    <!-- Quiz Screen -->
+    <div id="quiz-screen" class="max-w-2xl w-full glass-card rounded-3xl shadow-xl p-6 md:p-10 hidden fade-in">
         <div class="mb-8">
             <div class="flex justify-between text-sm text-gray-500 mb-2 font-medium">
                 <span id="question-number">問題 1 / 5</span>
@@ -67,20 +126,21 @@
         <div id="question-container">
             <h2 id="question-text" class="text-2xl font-bold text-gray-800 mb-8 leading-tight"></h2>
             <div id="options-container" class="space-y-4">
-                </div>
+            </div>
         </div>
     </div>
 
-    <div id="result-screen" class="max-w-2xl w-full bg-white rounded-3xl shadow-xl p-8 hidden fade-in">
+    <!-- Result Screen -->
+    <div id="result-screen" class="max-w-2xl w-full glass-card rounded-3xl shadow-xl p-8 hidden fade-in">
         <div class="text-center mb-8">
             <h3 class="text-xl text-orange-600 font-bold mb-2">探索結果</h3>
             <h2 id="result-title" class="text-3xl font-bold text-gray-800 mb-4">您的出走風格</h2>
-            <div id="result-desc" class="text-lg text-gray-600 leading-relaxed mb-8 bg-orange-50 p-6 rounded-2xl text-left border-l-4 border-orange-500">
+            <div id="result-desc" class="text-lg text-gray-600 leading-relaxed mb-8 bg-orange-50/50 p-6 rounded-2xl text-left border-l-4 border-orange-500">
             </div>
         </div>
 
         <div class="space-y-6">
-            <div class="bg-gray-50 p-6 rounded-2xl border border-gray-200">
+            <div class="bg-white/60 p-6 rounded-2xl border border-gray-200 shadow-sm">
                 <h4 class="font-bold text-gray-800 mb-2 flex items-center">
                     <span class="w-8 h-8 rounded-full bg-green-100 text-green-700 flex items-center justify-center mr-2">📍</span>
                     推薦您的出走路徑
@@ -88,7 +148,7 @@
                 <p id="path-recommendation" class="text-lg text-green-800 font-medium"></p>
             </div>
 
-            <div class="bg-gray-50 p-6 rounded-2xl border border-gray-200">
+            <div class="bg-white/60 p-6 rounded-2xl border border-gray-200 shadow-sm">
                 <h4 class="font-bold text-gray-800 mb-2 flex items-center">
                     <span class="w-8 h-8 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center mr-2">🏠</span>
                     推薦您的目的地 / 領路人
@@ -175,7 +235,7 @@
             optionsContainer.innerHTML = '';
             q.options.forEach((opt, idx) => {
                 const btn = document.createElement('button');
-                btn.className = "btn-option w-full p-5 text-left text-lg md:text-xl rounded-2xl bg-white shadow-sm hover:shadow-md flex items-center";
+                btn.className = "btn-option w-full p-5 text-left text-lg md:text-xl rounded-2xl bg-white/80 shadow-sm hover:shadow-md flex items-center";
                 btn.innerHTML = `
                     <span class="w-10 h-10 rounded-full border-2 border-gray-200 flex items-center justify-center mr-4 text-gray-400 font-bold group-hover:border-orange-500">${String.fromCharCode(65 + idx)}</span>
                     <span class="flex-1">${opt.text}</span>
@@ -208,13 +268,10 @@
             let pathName = "";
             let destName = "";
 
-            // 動態按鈕處理
             const ctaBtn = document.getElementById('cta-button');
 
             if (path === "practice") {
                 pathName = "出走練習所 (3天2夜 系列課程)";
-                
-                // 設定按鈕
                 ctaBtn.innerText = "了解2026【出走練習所】活動詳情";
                 ctaBtn.onclick = () => window.open('https://www.hondao.org.tw/news/3/201', '_blank');
 
@@ -230,8 +287,6 @@
                 }
             } else if (path === "task") {
                 pathName = "出走任務 (6天5夜 議題參與)";
-                
-                // 設定按鈕
                 ctaBtn.innerText = "了解2026【出走任務/地方交換宿】活動詳情";
                 ctaBtn.onclick = () => window.open('https://www.hondao.org.tw/news/3/193', '_blank');
 
@@ -243,8 +298,6 @@
                 else destName = "台東長濱｜竹湖山居 (森林復育與自然生活)";
             } else {
                 pathName = "地方交換宿 (2至4週 深度停留)";
-                
-                // 設定按鈕
                 ctaBtn.innerText = "了解2026【出走任務/地方交換宿】活動詳情";
                 ctaBtn.onclick = () => window.open('https://www.hondao.org.tw/news/3/193', '_blank');
 
