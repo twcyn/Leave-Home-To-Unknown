@@ -38,11 +38,10 @@
 </head>
 <body class="min-h-screen flex flex-col items-center justify-center p-4">
 
-    <!-- Start Screen -->
     <div id="start-screen" class="max-w-2xl w-full bg-white rounded-3xl shadow-xl p-8 text-center fade-in">
         <div class="mb-6">
             <span class="inline-block px-4 py-1 bg-orange-100 text-orange-700 rounded-full text-sm font-bold mb-2">弘道基金會 2026 計畫</span>
-            <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">離家出走：找尋你的第三人生韻律</h1>
+            <h1 class="text-3xl md:text-4xl font-bold text-gray-800 mb-4">離家出走：為生活找一個暫停鍵</h1>
             <p class="text-lg text-gray-600 leading-relaxed mb-8">
                 人生下半場，是一場重新找回自己的練習。<br>
                 放下日常的瑣碎與牽掛，您準備好換一種呼吸方式了嗎？<br>
@@ -54,9 +53,7 @@
         </button>
     </div>
 
-    <!-- Quiz Screen -->
     <div id="quiz-screen" class="max-w-2xl w-full bg-white rounded-3xl shadow-xl p-6 md:p-10 hidden fade-in">
-        <!-- Progress -->
         <div class="mb-8">
             <div class="flex justify-between text-sm text-gray-500 mb-2 font-medium">
                 <span id="question-number">問題 1 / 5</span>
@@ -67,16 +64,13 @@
             </div>
         </div>
 
-        <!-- Question Content -->
         <div id="question-container">
             <h2 id="question-text" class="text-2xl font-bold text-gray-800 mb-8 leading-tight"></h2>
             <div id="options-container" class="space-y-4">
-                <!-- Options will be injected here -->
-            </div>
+                </div>
         </div>
     </div>
 
-    <!-- Result Screen -->
     <div id="result-screen" class="max-w-2xl w-full bg-white rounded-3xl shadow-xl p-8 hidden fade-in">
         <div class="text-center mb-8">
             <h3 class="text-xl text-orange-600 font-bold mb-2">探索結果</h3>
@@ -103,13 +97,13 @@
             </div>
         </div>
 
-        <div class="mt-10 flex flex-col space-y-4 text-center">
+        <div class="mt-10 flex flex-col space-y-4">
             <button onclick="location.reload()" class="w-full py-4 bg-gray-100 text-gray-600 text-lg font-bold rounded-full hover:bg-gray-200 transition">
                 重新測驗
             </button>
-            <a href="https://www.hondao.org.tw/news/3/193" target="_blank" rel="noopener noreferrer" class="block w-full py-4 hongdao-bg-orange text-white text-xl font-bold rounded-full shadow-lg hover:bg-orange-700 transition">
+            <button id="cta-button" class="w-full py-4 hongdao-bg-orange text-white text-xl font-bold rounded-full shadow-lg hover:bg-orange-700 transition">
                 了解 2026 計畫詳情
-            </a>
+            </button>
         </div>
     </div>
 
@@ -126,7 +120,7 @@
             {
                 text: "關於節奏：如果要把這趟旅程比喻成一種「步調」，您最嚮往哪一種？",
                 options: [
-                    { text: "像是一場慢步走，邊走邊看、邊採集，重新找回感官的靈敏度。", score: { style: "iris", dest: "changbin" } },
+                    { text: "像是一場慢步走，邊走邊看、專注於心，重新找回感官的靈敏度。", score: { style: "iris", dest: "changbin" } },
                     { text: "像是一場說走就走的旅行，練習面對未知，證明自己一個人也能走得很好。", score: { style: "fun", path: "stay" } },
                     { text: "像是跟著節奏勞動，流汗後與夥伴共食，感受生命扎實的重量。", score: { path: "task", dest: "fengbin" } }
                 ]
@@ -179,7 +173,6 @@
 
             const optionsContainer = document.getElementById('options-container');
             optionsContainer.innerHTML = '';
-
             q.options.forEach((opt, idx) => {
                 const btn = document.createElement('button');
                 btn.className = "btn-option w-full p-5 text-left text-lg md:text-xl rounded-2xl bg-white shadow-sm hover:shadow-md flex items-center";
@@ -209,17 +202,22 @@
             document.getElementById('quiz-screen').classList.add('hidden');
             document.getElementById('result-screen').classList.remove('hidden');
 
-            // Determine Path
-            const pathArr = Object.keys(scores.path);
-            const path = pathArr.reduce((a, b) => scores.path[a] >= scores.path[b] ? a : b);
-            
+            const path = Object.keys(scores.path).reduce((a, b) => scores.path[a] > scores.path[b] ? a : b);
             let resultTitle = "";
             let resultDesc = "";
             let pathName = "";
             let destName = "";
 
+            // 動態按鈕處理
+            const ctaBtn = document.getElementById('cta-button');
+
             if (path === "practice") {
-                pathName = "出走練習所 (3天 2026 系列課程)";
+                pathName = "出走練習所 (3天2夜 系列課程)";
+                
+                // 設定按鈕
+                ctaBtn.innerText = "了解2026【出走練習所】活動詳情";
+                ctaBtn.onclick = () => window.open('https://www.hondao.org.tw/news/3/201', '_blank');
+
                 const style = scores.style.iris >= scores.style.fun ? "iris" : "fun";
                 if (style === "iris") {
                     resultTitle = "細膩的風土觀察家";
@@ -232,24 +230,30 @@
                 }
             } else if (path === "task") {
                 pathName = "出走任務 (6天5夜 議題參與)";
-                const destArr = Object.keys(scores.dest);
-                const dest = destArr.reduce((a, b) => scores.dest[a] >= scores.dest[b] ? a : b);
+                
+                // 設定按鈕
+                ctaBtn.innerText = "了解2026【出走任務/地方交換宿】活動詳情";
+                ctaBtn.onclick = () => window.open('https://www.hondao.org.tw/news/3/193', '_blank');
+
+                const dest = Object.keys(scores.dest).reduce((a, b) => scores.dest[a] > scores.dest[b] ? a : b);
                 resultTitle = "身體力行的行動派";
                 resultDesc = "您渴望透過實際的投入來感受生命的價值。不論是守護海洋、復育森林還是參與部落文化，您都能在「做中學」裡看見不同的自己。";
-                
-                if (dest === "fengbin") destName = "花蓮豐濱｜成為部落人 (部落文化與山林智慧)";
+                if (dest === "fengbin") destName = "花蓮豐濱｜高山森林基地 (部落文化與山林智慧)";
                 else if (dest === "baisha") destName = "澎湖白沙｜海漂實驗室 (海洋保護與挑戰之旅)";
-                else destName = "台東長濱｜與森林作朋友 (森林復育與自然生活)";
+                else destName = "台東長濱｜竹湖山居 (森林復育與自然生活)";
             } else {
                 pathName = "地方交換宿 (2至4週 深度停留)";
+                
+                // 設定按鈕
+                ctaBtn.innerText = "了解2026【出走任務/地方交換宿】活動詳情";
+                ctaBtn.onclick = () => window.open('https://www.hondao.org.tw/news/3/193', '_blank');
+
                 resultTitle = "優雅的在地生活家";
                 resultDesc = "您已經準備好更獨立的探索。您渴望長時間停留在一個地方，運用您的專長回饋在地，並與土地建立更深層、如鄰里般的呼吸節奏。";
-                const destArr = Object.keys(scores.dest);
-                const dest = destArr.reduce((a, b) => scores.dest[a] >= scores.dest[b] ? a : b);
-                
-                if (dest === "fengbin") destName = "花蓮豐濱｜部落生活交換";
-                else if (dest === "baisha") destName = "澎湖白沙｜海島生活交換";
-                else destName = "台東長濱｜山海小鎮生活交換";
+                const dest = Object.keys(scores.dest).reduce((a, b) => scores.dest[a] > scores.dest[b] ? a : b);
+                if (dest === "fengbin") destName = "花蓮豐濱｜高山森林基地 (部落生活交換)";
+                else if (dest === "baisha") destName = "澎湖白沙｜海漂實驗室 (海島生活交換)";
+                else destName = "台東長濱｜竹湖山居 (山海小鎮生活交換)";
             }
 
             document.getElementById('result-title').innerText = resultTitle;
